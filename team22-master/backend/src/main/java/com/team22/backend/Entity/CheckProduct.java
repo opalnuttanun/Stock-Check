@@ -1,12 +1,10 @@
 package com.team22.backend.Entity;
 import lombok.*;
-
 import javax.persistence.*;
 
-
-@Entity  //บอกว่าเป็น class entity class ที่เก็บขอมูล
-@Data  // lombox จะสร้าง method getter setter ให้เอง
+@Entity
 @Getter @Setter
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 @Table(name=" CheckProduct") //ชื่อตาราง
@@ -18,6 +16,7 @@ public class CheckProduct {
   
     private @NonNull Long checkId;
     private @NonNull String checkComment;
+    
     private @NonNull Integer checkLevel;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
@@ -27,4 +26,5 @@ public class CheckProduct {
     @OneToOne()
     @JoinColumn(name = "CheckHistory_ID", insertable = true)
     private  CheckHistory checkhistory;
+
 }

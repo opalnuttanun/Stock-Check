@@ -1,7 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit ,ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CheckhistoryService} from '../service/checkhistory.service';
 import {MatSnackBar} from '@angular/material';
+import {DatePipe} from '@angular/common';
+import {MatSort} from '@angular/material';
+
 @Component({
   selector: 'app-checkhistory',
   templateUrl: './checkhistory.component.html',
@@ -16,14 +19,19 @@ export class CheckhistoryComponent implements OnInit {
   ];
   product: Array<any>;
   checkproduct: Array<any>;
+  checkhistoryDate: Array<any>;
+  selectcheckhistoryDate: Array<any>;
+  pipe = new DatePipe('th');
+
+  @ViewChild(MatSort)
+  sort: MatSort;
   views: any = {
     checkId:'',
     selectProductID: '',
     selectProductName: '',
     selectCheckProductComment: '',
     selectCheckProductLevel: '',
-    selectCheckProductID: '',
-    checkhistorytDate:''
+    selectCheckProductID: ''
   };
   displayedColumns: string[] = ['CID', 'productID','productname', 'level', 'comment'];
   constructor(private CheckhistoryService: CheckhistoryService,private snackBar: MatSnackBar, private httpClient: HttpClient) {
@@ -62,6 +70,23 @@ export class CheckhistoryComponent implements OnInit {
       },
       error => {
         this.snackBar.open('delete', 'uncomplete', {
+        });
+        console.log('Error', error);
+      }
+    );
+  }
+  savehistory() {
+    this.views.prodID = this.views.selectPID;
+    this.httpClient.post('http://localhost:8080/checkproduct/' 
+    + this.views.prodID + '/' + this.views.level + '/' + this.views.comment,
+    this.views,) .subscribe(
+      data => {
+        this.snackBar.open('Check ', 'complete', {
+        });
+        console.log('INPUT Request is successful', data);
+      },
+      error => {
+        this.snackBar.open('Check ', 'uncomplete', {
         });
         console.log('Error', error);
       }

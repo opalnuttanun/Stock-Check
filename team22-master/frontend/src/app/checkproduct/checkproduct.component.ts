@@ -103,9 +103,8 @@ export class CheckproductComponent implements OnInit {
   }
   save() {
     this.views.prodID = this.views.selectPID;
-    this.httpClient.post('http://localhost:8080/checkproduct/' 
-    + this.views.prodID + '/' + this.views.level + '/' + this.views.comment,
-    this.views,) .subscribe(
+    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment,
+    this.views) .subscribe(
       data => {
         this.snackBar.open('Check ', 'complete', {
         });

@@ -31,13 +31,15 @@
       </mat-form-field>
       <br/>
       <mat-form-field class="example-full-width">
-        <input matInput [matDatepicker]="picker" [(ngModel)]="views.checkhistorytDate"name="date" [(value)]="views.selectcheckhistorytDate" [value]="views.checkhistorytDate">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="checkhistoryDate"name="date" [(value)]="selectcheckhistorytDate" [value]="checkhistorytDate">
         <mat-placeholder class="placeholder">Date</mat-placeholder>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field><br/>
      <br/>
-     
+     <button mat-mini-fab class="bottom-left">
+      <mat-icon (click)="savehistory()" aria-label="Example icon-button with a save icon">save</mat-icon>
+    </button>
   <br/> <br/>
      
       <br><br>

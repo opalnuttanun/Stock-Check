@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class CheckHistory {
     @Column(name="CheckHistory_ID",unique = true, nullable = false)
      
     private @NonNull Long checkhistoryId;
-    private @NonNull Date checkhistorytDate;
+    private LocalDate checkhistorytDate;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)

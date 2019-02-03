@@ -1,11 +1,7 @@
 package com.team22.backend.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,7 +35,9 @@ public class Product {
     private @NonNull String productName;
 
     private @NonNull Integer productQuantity;
+
     private @NonNull Date productDate;
+    
     private @NonNull Integer productPrice ;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Type.class)
