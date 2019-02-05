@@ -82,7 +82,7 @@ table {
   color: rgb(0, 0, 0);
 }
 mat-slider {
-  width: 300px;
+  width: 250px;
 }
 body{
   background-image: url("/img/OLF8ED0.jpg");
@@ -92,4 +92,10 @@ body{
   height: 561px;
   top: 10;
   bottom: 0;
+}
+.example-date{
+  color: black;
+  font-size: 12px;
+  margin-right: 5%;
+  width: 30%;
 }

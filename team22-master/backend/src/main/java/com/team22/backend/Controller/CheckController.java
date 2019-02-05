@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -18,34 +20,43 @@ public class CheckController {
     @Autowired
     private CheckProductRepository checkProductRepository;
     @Autowired
-    private CheckHistoryRepository checkHistoryRepository;
+    private CheckingRepository checkingRepository;
 
     @GetMapping(path = "/checkproduct", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<CheckProduct> checkProduct() {
+    public Collection <CheckProduct> checkProduct() {
         return checkProductRepository.findAll().stream().collect(Collectors.toList());
     }
-    @PostMapping("/checkproduct/{prodId}/{checkLevel}/{checkComment}")
-    public CheckProduct newCheckproduct(CheckProduct newCheck, @PathVariable Long prodId, @PathVariable Integer checkLevel,@PathVariable String checkComment)
-    {
+
+    @GetMapping(path = "/checking", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection <Checking> checking() {
+        return checkingRepository.findAll().stream().collect(Collectors.toList());
+    }
+    @PostMapping("/checkproduct/{prodId}/{checkLevel}/{checkComment}/{checkingId}")
+    public CheckProduct newCheckproduct(CheckProduct newCheck, @PathVariable Long prodId, @PathVariable Integer checkLevel,@PathVariable String checkComment,@PathVariable Long checkingId)
+    {   Checking setCh = checkingRepository.findByCheckingId(checkingId);
         Product setProd = productRepository.findByProdId(prodId);
         newCheck.setCheckLevel(checkLevel);
         newCheck.setCheckComment(checkComment);
         newCheck.setProduct(setProd);
+        newCheck.setChecking(setCh);
         return checkProductRepository.save(newCheck);
     }
-    // @PostMapping("/checkhistory/{checkId}/{checkhistorytDate}")
-    // public CheckHistory newCheckhistory(CheckHistory newCheckhis, @PathVariable Long checkId, @PathVariable String checkhistorytDate)
-    //  {
-    //     String chDate = ReserveDate;
+    // @PostMapping("/checkhistory/{checkId}//{prodId}/{checkhistoryDate}")
+    // public CheckHistory newCheckhistory(@PathVariable Long checkId,@PathVariable Long prodId, @PathVariable String checkhistoryDate)
+    //  {  CheckHistory newCheckhis = new CheckHistory(); 
+    //     String chDate = checkhistoryDate;
     //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
     //     LocalDate date = LocalDate.parse(chDate,formatter);
+
+    //     Product setProd = productRepository.findByProdId(prodId);
     //     CheckProduct setCheck = checkProductRepository.findByCheckId(checkId);
-    //     newCheckhis.setCheckhistorytDate(checkhistorytDate);
+    //     newCheckhis.setCheckhistoryDate(date);
     //     newCheckhis.setCheckProduct(setCheck);
+    //     newCheckhis.setProduct(setProd);
     //     return checkHistoryRepository.save(newCheckhis);
     // }
-    @DeleteMapping("/checkhistory/{checkId}")
-    public void deletecheckproductHistory(@PathVariable Long checkId) {
+    @DeleteMapping("/checkproduct/{checkId}")
+    public void deletecheckproduct(@PathVariable Long checkId) {
         checkProductRepository.deleteById(checkId);
     }
     @PutMapping("/checkproduct/editcheck/{prodId}/{checkId}/{checkLevel}/{checkComment}")

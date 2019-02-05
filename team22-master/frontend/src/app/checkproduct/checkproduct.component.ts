@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {CheckproductService} from '../service/checkproduct.service';
 import {MatSnackBar} from '@angular/material';
+import {Component, OnInit ,ViewChild} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {MatSort} from '@angular/material';
 
 export interface Tile {
   cols: number;
@@ -37,8 +39,14 @@ export class CheckproductComponent implements OnInit {
   step = 1;
   type: Array<any>;
   status: Array<any>;
+  checking: Array<any>;
   product: Array<any>;
   checkproduct: Array<any>;
+  checkhistoryDate: Array<any>;
+  
+  pipe = new DatePipe('en-US');
+  @ViewChild(MatSort)
+  sort: MatSort;
   views: any = {
     level : 0,
     comment: '',
@@ -55,7 +63,9 @@ export class CheckproductComponent implements OnInit {
     selectPID: '',
     selectCheckProductComment: '',
     selectCheckProductLevel: '',
-    selectCheckId:''
+    selectCheckId:'',
+    selectChecking:'',
+    checkingSelect:''
   };
   displayedColumns: string[] = ['PID', 'productID', 'productName', 'productPrice', 'productQuantity', 'types','statuses'];
   displayedColumnss: string[] = ['PID', 'productID','productName','CID','level', 'comment'];
@@ -77,6 +87,10 @@ export class CheckproductComponent implements OnInit {
     this.CheckService.getCheckProduct().subscribe(data => {
       this.checkproduct = data;
       console.log(this.checkproduct);
+    });
+    this.CheckService.getChecking().subscribe(data => {
+      this.checking = data;
+      console.log(this.checking);
     });
   }
    selectRow(row) {
@@ -103,7 +117,8 @@ export class CheckproductComponent implements OnInit {
   }
   save() {
     this.views.prodID = this.views.selectPID;
-    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment,
+    this.views.checkingSelect = this.views.selectChecking;
+    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment+'/'+this.views.checkingSelect,
     this.views) .subscribe(
       data => {
         this.snackBar.open('Check ', 'complete', {
@@ -147,4 +162,37 @@ export class CheckproductComponent implements OnInit {
       }
     );
   }
+  delete() {
+    this.httpClient.delete('http://localhost:8080/checkproduct/' + this.views.checkID )
+    .subscribe(
+      data => {
+        this.snackBar.open('delete', 'complete', {
+        });
+        console.log('Delete Request is successful', data);
+      },
+      error => {
+        this.snackBar.open('delete', 'uncomplete', {
+        });
+        console.log('Error', error);
+      }
+    );
+  }
+  savehistory() {
+    this.views.prodID = this.views.selectPID;
+    this.views.checkID = this.views.selectCheckId;
+    this.httpClient.post('http://localhost:8080/checkhistory/' 
+    + this.views.checkID + '/' + this.views.prodID + '/' + this.pipe.transform(this.checkhistoryDate,'dd:MM:yyyy'),
+    this.views,) .subscribe(
+      data => {
+        this.snackBar.open('Check ', 'complete', {
+        });
+        console.log('INPUT Request is successful', data);
+      },
+      error => {
+        this.snackBar.open('Check ', 'uncomplete', {
+        });
+        console.log('Error', error);
+      }
+    );
+  } 
 }

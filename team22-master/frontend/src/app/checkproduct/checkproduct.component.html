@@ -22,17 +22,36 @@
       <input matInput [(ngModel)]="views.productQuantity"[(value)]="views.selectProductQuantity" name="quantity" [value]="views.ProductQuantity"disabled>
         <mat-placeholder class="placeholder">Quantity</mat-placeholder>
       </mat-form-field><br/>
-      <br/> <br/>
+      <br/>
       CHECK :
       <mat-form-field class="check-width">
         <input matInput name="level"[(ngModel)]="views.level"[(value)]="views.selectCheckProductLevel"name = "lev" [value]="views.level">
         <span matSuffix>%&nbsp;</span>
       </mat-form-field><br/>
-      <mat-slider thumbLabel [(ngModel)]="views.level"[(value)]="views.selectCheckProductLevel"name = "lev" [value]="views.level"></mat-slider><br/>
+      <mat-slider [max]="max"
+      [min]="min"
+      [step]="step"
+      thumbLabel [(ngModel)]="views.level"[(value)]="views.selectCheckProductLevel"name = "lev" [value]="views.level"></mat-slider>
     COMMENT :
     <mat-form-field class="example-full-width">
       <textarea matInput [(ngModel)]="views.comment" [(value)]="views.selectCheckProductComment" name="comm" [value] = "views.comment"></textarea>
     </mat-form-field><br/>
+    <mat-form-field class="example-date">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="checkhistoryDate"name="date" [(value)]="selectcheckhistorytDate" [value]="checkhistorytDate">
+        <mat-placeholder class="placeholder">Date</mat-placeholder>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field class="example-width">
+        <mat-placeholder class="placeholder">Checking</mat-placeholder>
+        <mat-select [(ngModel)]="views.checkingSelect" name = "checking"[(value)]="views.selectChecking" >
+          <mat-option>None</mat-option>
+          <mat-option *ngFor="let checking of checking" [value]="checking.checkingId">
+            {{checking.checking}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br/>
     <button mat-mini-fab class="bottom-left">
       <mat-icon (click)="save()" aria-label="Example icon-button with a save icon">save</mat-icon>
     </button>
@@ -40,7 +59,6 @@
       <mat-icon (click)="editcheck()"aria-label="Example icon-button with a update icon">edit</mat-icon>
     </button>
     <br/><br/>
-     <button mat-flat-button color="accent" routerLink="/checkhistory">Check History</button>
      </form>
     </mat-grid-tile>
 
@@ -56,6 +74,10 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
+
+        <button mat-mini-fab class="bottom-left">
+            <mat-icon (click)="delete()"aria-label="Example icon-button with a bin icon">delete</mat-icon>
+          </button>
 
           <table mat-table [dataSource]="product" class="mat-elevation-z8">
             <!-- PID Column -->

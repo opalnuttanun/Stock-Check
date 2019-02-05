@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @SpringBootApplication
 public class Data {
 
-//    Date date = new Date();
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Data.class, args);
     }
@@ -29,7 +28,6 @@ public class Data {
         filter.setForceEncoding(true);
         return filter;
     }
-
     @Bean
     ApplicationRunner init(PositionRepository positionRepository,
                            StaffRepository staffRepository,
@@ -45,7 +43,8 @@ public class Data {
                            LeaseRepository leaseRepository,
                            PayMentRepository  payMentRepository,
                            ExperienceRepository experienceRepository,
-                           CheckProductRepository checkProductRepository
+                           CheckProductRepository checkProductRepository,
+                           CheckingRepository checkingRepository
                            ) {
                             return args -> {
 
@@ -63,6 +62,10 @@ public class Data {
                                 Stream.of("Bust", "Waist", "Hip", "Length", "Size", "OtherDetail").forEach(dName -> {
                                     Detail dprodName = new Detail(dName);
                                     detailRepository.save(dprodName);
+                                });
+                                Stream.of("Use","Repair","Donate","Reject","Recycle").forEach(checking -> {
+                                    Checking checkingprod = new Checking (checking);
+                                    checkingRepository.save(checkingprod);
                                 });
                                 Stream.of("M.3","M.6","Polytechnical College","Technical College","Bachelor Degrees","Master Degrees").forEach(EduName -> {
                                     Education educationdb = new Education();

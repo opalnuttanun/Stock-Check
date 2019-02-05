@@ -22,4 +22,7 @@ export class CheckproductService {
   getCheckProduct(): Observable<any> {
     return this.http.get(this.API + '/checkproduct');
   }
+  getChecking(): Observable<any> {
+    return this.http.get(this.API + '/checking');
+  }
 }

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +10,6 @@ import {MatButtonModule} from '@angular/material';
 import {MatInputModule} from '@angular/material/input';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
@@ -55,8 +54,6 @@ import { StockComponent} from './stock/stock.component';
 import { CheckproductComponent} from './checkproduct/checkproduct.component';
 import {STOCKINGService} from './service/stocking.service';
 import { CheckproductService } from './service/checkproduct.service';
-import { CheckhistoryComponent } from './checkhistory/checkhistory.component';
-import { CheckhistoryService } from './service/checkhistory.service';
 const appRoutes: Routes = [
 ];
 
@@ -73,8 +70,7 @@ const appRoutes: Routes = [
     MenuadminComponent,
     StockComponent,
     RegisterComponent,
-    CheckproductComponent,
-    CheckhistoryComponent
+    CheckproductComponent
   ],
   imports: [
     BrowserModule,
@@ -123,12 +119,11 @@ const appRoutes: Routes = [
       {path: 'renting', component: RentingComponent},
       {path: 'stock' , component: StockComponent},
       {path: 'check' , component: CheckproductComponent},
-      {path: 'checkhistory' , component: CheckhistoryComponent},
       {path: 'register' , component: RegisterComponent},
       {path: '', component: HomeComponent}
     ])
   ],
-  providers: [PaymentService , MakeupService , SellingService , LeaseService , RegisterService , STOCKINGService,CheckproductService,CheckhistoryService,{provide: MAT_DATE_LOCALE, useValue: 'th'}],
+  providers: [PaymentService , MakeupService , SellingService , LeaseService , RegisterService , STOCKINGService,CheckproductService], 
   bootstrap: [AppComponent]
 })
 export class AppModule { }
