@@ -23,48 +23,42 @@ public class CheckController {
     private CheckingRepository checkingRepository;
 
     @GetMapping(path = "/checkproduct", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection <CheckProduct> checkProduct() {
+    public Collection<CheckProduct> checkProduct() {
         return checkProductRepository.findAll().stream().collect(Collectors.toList());
     }
-
+    
     @GetMapping(path = "/checking", produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection <Checking> checking() {
         return checkingRepository.findAll().stream().collect(Collectors.toList());
     }
-    @PostMapping("/checkproduct/{prodId}/{checkLevel}/{checkComment}/{checkingId}")
-    public CheckProduct newCheckproduct(CheckProduct newCheck, @PathVariable Long prodId, @PathVariable Integer checkLevel,@PathVariable String checkComment,@PathVariable Long checkingId)
+    @PostMapping("/checkproduct/{prodId}/{checkLevel}/{checkComment}/{checkDate}/{checkingId}")
+    public CheckProduct newCheckproduct(@PathVariable Long prodId, @PathVariable Integer checkLevel,@PathVariable String checkComment,@PathVariable String checkDate,@PathVariable Long checkingId)
     {   Checking setCh = checkingRepository.findByCheckingId(checkingId);
+        String chDate = checkDate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+        LocalDate date = LocalDate.parse(chDate,formatter);
         Product setProd = productRepository.findByProdId(prodId);
+        CheckProduct newCheck = new CheckProduct();
         newCheck.setCheckLevel(checkLevel);
         newCheck.setCheckComment(checkComment);
         newCheck.setProduct(setProd);
+        newCheck.setCheckDate(date);
         newCheck.setChecking(setCh);
         return checkProductRepository.save(newCheck);
     }
-    // @PostMapping("/checkhistory/{checkId}//{prodId}/{checkhistoryDate}")
-    // public CheckHistory newCheckhistory(@PathVariable Long checkId,@PathVariable Long prodId, @PathVariable String checkhistoryDate)
-    //  {  CheckHistory newCheckhis = new CheckHistory(); 
-    //     String chDate = checkhistoryDate;
-    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
-    //     LocalDate date = LocalDate.parse(chDate,formatter);
-
-    //     Product setProd = productRepository.findByProdId(prodId);
-    //     CheckProduct setCheck = checkProductRepository.findByCheckId(checkId);
-    //     newCheckhis.setCheckhistoryDate(date);
-    //     newCheckhis.setCheckProduct(setCheck);
-    //     newCheckhis.setProduct(setProd);
-    //     return checkHistoryRepository.save(newCheckhis);
-    // }
     @DeleteMapping("/checkproduct/{checkId}")
     public void deletecheckproduct(@PathVariable Long checkId) {
         checkProductRepository.deleteById(checkId);
     }
-    @PutMapping("/checkproduct/editcheck/{prodId}/{checkId}/{checkLevel}/{checkComment}")
-    public CheckProduct editcheckproduct(@RequestBody CheckProduct checkp, @PathVariable Long prodId,@PathVariable Long checkId, @PathVariable Integer checkLevel, @PathVariable String checkComment) {
+    @PutMapping("/checkproduct/editcheck/{prodId}/{checkId}/{checkLevel}/{checkComment}/{checkingId}")
+    public CheckProduct editcheckproduct(@RequestBody CheckProduct checkp, @PathVariable Long prodId,@PathVariable Long checkId
+    , @PathVariable Integer checkLevel, @PathVariable String checkComment,@PathVariable Long checkingId) {
+        Checking    setCh = checkingRepository.findByCheckingId(checkingId);
         CheckProduct setchP = checkProductRepository.findByCheckId(checkId);
         return checkProductRepository.findById(prodId).map(checkEdit -> {
                     checkEdit.setCheckLevel(checkLevel);
                     checkEdit.setCheckComment(checkComment);
+                    checkEdit.setChecking(setCh);
                     return checkProductRepository.save(checkEdit);
                 }
         ).orElseGet(() -> {

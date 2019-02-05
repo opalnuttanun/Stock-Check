@@ -42,8 +42,8 @@ export class CheckproductComponent implements OnInit {
   checking: Array<any>;
   product: Array<any>;
   checkproduct: Array<any>;
-  checkhistoryDate: Array<any>;
-  
+  checkDate: Array<any>;
+  selectcheckDate: Array<any>;
   pipe = new DatePipe('en-US');
   @ViewChild(MatSort)
   sort: MatSort;
@@ -68,7 +68,7 @@ export class CheckproductComponent implements OnInit {
     checkingSelect:''
   };
   displayedColumns: string[] = ['PID', 'productID', 'productName', 'productPrice', 'productQuantity', 'types','statuses'];
-  displayedColumnss: string[] = ['PID', 'productID','productName','CID','level', 'comment'];
+  displayedColumnss: string[] = ['PID','CID','level', 'comment','date','checking'];
   constructor(private CheckService: CheckproductService,private snackBar: MatSnackBar, private httpClient: HttpClient) {
   }
   ngOnInit() {
@@ -110,15 +110,20 @@ export class CheckproductComponent implements OnInit {
     this.views.selectCheckProductLevel = row.checkLevel;
     this.views.selectCheckProductComment = row.checkComment;
     this.views.selectCheckId = row.checkId;
+    this.views.selectChecking = row.checking.checkingId;
+    this.checkDate = row.checkDate;
     console.log(this.views.selectCheckId);
     console.log(this.views.selectPID);
     console.log(this.views.selectCheckProductComment);
     console.log(this.views.selectCheckProductLevel);
+    console.log(this.checkDate);
+    console.log(this.views.selectChecking);
   }
   save() {
     this.views.prodID = this.views.selectPID;
     this.views.checkingSelect = this.views.selectChecking;
-    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment+'/'+this.views.checkingSelect,
+    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment
+    +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.views.checkingSelect,
     this.views) .subscribe(
       data => {
         this.snackBar.open('Check ', 'complete', {
@@ -141,12 +146,16 @@ export class CheckproductComponent implements OnInit {
     if (!this.views.comment) {
       this.views.comment = this.views.selectCheckProductComment;
     }
+    if (!this.views.checkingSelect) {
+      this.views.checkingSelect = this.views.selectChecking;
+    }
     console.log(this.views.prodID);
     console.log(this.views.checkId);
     console.log(this.views.level);
     console.log(this.views.comment);
+    console.log(this.views.selectChecking);
     this.httpClient.put('http://localhost:8080/checkproduct/editcheck/'+ this.views.prodID + '/' + this.views.checkId + '/'
-    + this.views.level + '/' + this.views.comment,
+    + this.views.level + '/' + this.views.comment + '/'+ this.views.checkingSelect,
     this.views)  .subscribe(
       data => {
         if (data)  {
@@ -163,7 +172,8 @@ export class CheckproductComponent implements OnInit {
     );
   }
   delete() {
-    this.httpClient.delete('http://localhost:8080/checkproduct/' + this.views.checkID )
+    this.views.checkId = this.views.selectCheckId;
+    this.httpClient.delete('http://localhost:8080/checkproduct/' + this.views.checkId )
     .subscribe(
       data => {
         this.snackBar.open('delete', 'complete', {
@@ -177,22 +187,4 @@ export class CheckproductComponent implements OnInit {
       }
     );
   }
-  savehistory() {
-    this.views.prodID = this.views.selectPID;
-    this.views.checkID = this.views.selectCheckId;
-    this.httpClient.post('http://localhost:8080/checkhistory/' 
-    + this.views.checkID + '/' + this.views.prodID + '/' + this.pipe.transform(this.checkhistoryDate,'dd:MM:yyyy'),
-    this.views,) .subscribe(
-      data => {
-        this.snackBar.open('Check ', 'complete', {
-        });
-        console.log('INPUT Request is successful', data);
-      },
-      error => {
-        this.snackBar.open('Check ', 'uncomplete', {
-        });
-        console.log('Error', error);
-      }
-    );
-  } 
 }

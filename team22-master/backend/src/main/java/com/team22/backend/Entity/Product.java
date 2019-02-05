@@ -36,7 +36,7 @@ public class Product {
 
     private @NonNull Integer productQuantity;
 
-    private @NonNull Date productDate;
+    private Date productDate;
     
     private @NonNull Integer productPrice ;
 

@@ -1,8 +1,11 @@
 package com.team22.backend.Entity;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @Entity
+@Data
 @Getter @Setter
 @NoArgsConstructor
 @ToString
@@ -16,14 +19,14 @@ public class CheckProduct {
   
     private @NonNull Long checkId;
     private @NonNull String checkComment;
-    
+    private LocalDate checkDate;
     private @NonNull Integer checkLevel;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)
     private  Product product;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Type.class)
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Checking.class)
     @JoinColumn(name = "CheckingId", insertable = true)
     private Checking checking;
 }
