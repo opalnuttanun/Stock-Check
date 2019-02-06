@@ -2,7 +2,6 @@ package com.team22.backend;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import java.util.Set;
@@ -23,7 +22,6 @@ public class ProductTests {
 
 	@Autowired
 	private ProductRepository productRepository;
-
 	@Autowired
     private TestEntityManager entityManager;
 
@@ -34,90 +32,135 @@ public class ProductTests {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
     }
-	@Test
-    public void testProductCharNotP(){
-        Product p2 = new Product();
-        p2.setProductIds("C1");
-         try {
-            entityManager.persist(p2);
+    @Test
+    public void testProductIdsComplete() {
+        Product p = new Product();
+        p.setProductIds("P55");
+        p.setProductName("ppppp");
+        p.setProductQuantity(5);
+        p.setProductPrice(1000);
+		   try {
+            entityManager.persist(p);
             entityManager.flush();
-
-            //fail("Should not pass to this line");
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n----------------->> 1.Test Customer Insert DataSuccess \n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
+        } catch(javax.validation.ConstraintViolationException e) {
+            fail("Test Customer Insert DataSuccess Error");
+        }
+    }
+    @Test
+    public void testProductIdsCannotBeNull() {
+        Product p1 = new Product();
+		p1.setProductIds(null);
+        
+        try {
+            entityManager.persist(p1);
+            entityManager.flush();
+            fail("Test ProductIds Not Null Error");
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->> 2.1 testProductIdsCannotBeNull\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 1);
         }
     }
     @Test
-    public void testProductNemeSize(){
-        Product p1 = new Product();
-        p1.setProductName("Dr");
-         try {
-            entityManager.persist(p1);
+    public void testProductNemeSizeMax(){
+        Product p2 = new Product();
+        p2.setProductName("Drqwertyuiopasdfghjklzxcvbnmqwertyuiasdfghjklzxcvbn");
+        try {
+            entityManager.persist(p2);
             entityManager.flush();
-
-            //fail("Should not pass to this line");
+            fail("ProductNeme Size Less Error");
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->> 2.2 testProductNemeSizeMax\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 2);
         }
     }
     @Test
-    public void testProductIdsCannotBeNull() {
+    public void testProductNemeSizeMin(){
         Product p3 = new Product();
-		p3.setProductIds(null);
-		   try {
+        p3.setProductName("Dr");
+        try {
             entityManager.persist(p3);
             entityManager.flush();
-            fail("productIds must not be null to be valid");
+            fail("ProductNeme Size Less Error");
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->> 2.3 testProductNemeSizeMin\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 2);
+        }
+    }
+	@Test
+    public void testProductIdsFirstCharNotP(){
+        Product p4 = new Product();
+        p4.setProductIds("C1");
+        try {
+            entityManager.persist(p4);
+            entityManager.flush();
+            fail("Test ProductIds Firstchar P Error");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->> 2.4 test ProductIdsFirstCharNotP\n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 1);
         }
     }
     @Test
-    public void testProductIdsCanNull() {
-        Product p = new Product();
-		p.setProductIds("P55");
-		
-		   try {
-            entityManager.persist(p);
-            entityManager.flush();
-        } catch(javax.validation.ConstraintViolationException e) {
-            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-            assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
-        }
-    }
-    @Test(expected=javax.persistence.PersistenceException.class)
+    //(expected=javax.persistence.PersistenceException.class)
     public void testProductIdsMustBeUnique() {
-        Product p4 = new Product();
-		p4.setProductIds("P55");
-        entityManager.persist(p4);
+        Product p6 = new Product();
+		p6.setProductIds("P55");
+        entityManager.persist(p6);
         entityManager.flush();
 
         Product p5 = new Product();
-		p5.setProductIds("P55");
-        entityManager.persist(p5);
-        entityManager.flush();
-
-        fail("Should not pass to this line");
+        p5.setProductIds("P55");
+        
+        try{
+            entityManager.persist(p5);
+            entityManager.flush();
+        }catch(javax.persistence.PersistenceException e) {
+            System.out.println(); 
+            System.out.println();   
+            System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->> 2.5 testProductIdsMustBeUnique \n\n\n\n\n\n\n\n\n\n\n");
+            System.out.println(); 
+            System.out.println(); 
+        }
     }
-
     @Test
     public void testProductIdsNotDigit(){
-        Product p6 = new Product();
-		p6.setProductIds("Pdefff");
+        Product p7 = new Product();
+		p7.setProductIds("Pdefff");
          try {
-            entityManager.persist(p6);
+            entityManager.persist(p7);
             entityManager.flush();
-
             fail("Should not pass to this line");
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(e);
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 1);
         }
