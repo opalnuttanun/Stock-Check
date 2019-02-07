@@ -10,6 +10,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import org.junit.Before;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import com.team22.backend.Entity.*;
 import com.team22.backend.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,15 @@ public class ProductTests {
     }
     @Test
     public void testProductIdsComplete() {
+        String pDate = ("01:02:2019");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+        LocalDate productDate = LocalDate.parse(pDate,formatter);
         Product p = new Product();
         p.setProductIds("P55");
         p.setProductName("ppppp");
         p.setProductQuantity(5);
         p.setProductPrice(1000);
+        p.setProductDate(productDate);
 		   try {
             entityManager.persist(p);
             entityManager.flush();
@@ -52,10 +58,13 @@ public class ProductTests {
         }
     }
     @Test
-    public void testProductIdsCannotBeNull() {
+    public void testProductCannotBeNull() {
         Product p1 = new Product();
-		p1.setProductIds(null);
-        
+        p1.setProductIds(null);
+        p1.setProductName(null);
+        p1.setProductQuantity(null);
+        p1.setProductPrice(null);
+        p1.setProductDate(null);
         try {
             entityManager.persist(p1);
             entityManager.flush();
@@ -68,7 +77,7 @@ public class ProductTests {
             System.out.println(); 
             System.out.println(); 
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
+            assertEquals(violations.size(), 5);
         }
     }
     @Test
@@ -87,7 +96,7 @@ public class ProductTests {
             System.out.println(); 
             System.out.println(); 
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 2);
+            assertEquals(violations.size(), 5);
         }
     }
     @Test
@@ -106,7 +115,7 @@ public class ProductTests {
             System.out.println(); 
             System.out.println(); 
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 2);
+            assertEquals(violations.size(), 5);
         }
     }
 	@Test
@@ -125,20 +134,30 @@ public class ProductTests {
             System.out.println(); 
             System.out.println(); 
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
+            assertEquals(violations.size(), 5);
         }
     }
     @Test
     //(expected=javax.persistence.PersistenceException.class)
     public void testProductIdsMustBeUnique() {
+        String pDate = ("01:02:2019");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+        LocalDate productDate = LocalDate.parse(pDate,formatter);
         Product p6 = new Product();
-		p6.setProductIds("P55");
+        p6.setProductIds("P55");
+        p6.setProductName("ppppp");
+        p6.setProductQuantity(5);
+        p6.setProductPrice(1000);
+        p6.setProductDate(productDate);
         entityManager.persist(p6);
         entityManager.flush();
 
         Product p5 = new Product();
         p5.setProductIds("P55");
-        
+        p5.setProductName("ppppp");
+        p5.setProductQuantity(5);
+        p5.setProductPrice(1000);
+        p5.setProductDate(productDate);
         try{
             entityManager.persist(p5);
             entityManager.flush();
@@ -162,7 +181,7 @@ public class ProductTests {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             System.out.println(e);
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
+            assertEquals(violations.size(), 5);
         }
     }
 }

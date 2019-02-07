@@ -12,6 +12,8 @@ import javax.validation.ValidatorFactory;
 import org.junit.Before;
 import com.team22.backend.Entity.*;
 import com.team22.backend.Repository.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -34,44 +36,79 @@ public class CheckProductTests {
     }
     @Test
     public void testCheckCommentize(){
-        CheckProduct cp1 = new CheckProduct();
-        cp1.setCheckComment("Dr");
+        CheckProduct cp = new CheckProduct();
+        cp.setCheckComment("Dr");
          try {
-            entityManager.persist(cp1);
+            entityManager.persist(cp);
             entityManager.flush();
             //fail("Should not pass to this line");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 5);
+        }
+    }
+    @Test
+    public void testCheckLevelCannotBeNull() {
+        CheckProduct cp1 = new CheckProduct();
+        cp1.setCheckLevel(null);
+        cp1.setCheckComment(null);
+        cp1.setCheckDate(null);
+		   try {
+            entityManager.persist(cp1);
+            entityManager.flush();
+            fail("CheckLevel must not be null to be valid");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 5);
+        }
+    }
+    @Test
+    public void testCheckProductComplete() {
+        String cDate = ("01:02:2019");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+        LocalDate checkDate = LocalDate.parse(cDate,formatter);
+        CheckProduct cp2 = new CheckProduct();
+        cp2.setCheckLevel(55);
+        cp2.setCheckComment("pooo");
+        cp2.setCheckDate(checkDate);
+		   try {
+            entityManager.persist(cp2);
+            entityManager.flush();
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 2);
         }
     }
-    @Test
-    public void testCheckLevelCannotBeNull() {
-        CheckProduct cp3 = new CheckProduct();
-		cp3.setCheckLevel(null);
-		   try {
-            entityManager.persist(cp3);
-            entityManager.flush();
-            fail("CheckLevel must not be null to be valid");
-        } catch(javax.validation.ConstraintViolationException e) {
-            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-            assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
-        }
-    }
-    @Test
-    public void testCheckLevelComplete() {
-        CheckProduct cp = new CheckProduct();
-        cp.setCheckLevel(55);
-        cp.setCheckComment("pooo");
-		   try {
-            entityManager.persist(cp);
-            entityManager.flush();
-        } catch(javax.validation.ConstraintViolationException e) {
-            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-            assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
-        }
-    }
+    // @Test
+    // (expected=javax.persistence.PersistenceException.class)
+    // public void testCheckLevelMustBeUnique() {
+    //     String cDate = ("01:02:2019");
+    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+    //     LocalDate checkDate = LocalDate.parse(cDate,formatter);
+    //     CheckProduct cp3 = new CheckProduct();
+    //     cp3.setCheckLevel(55);
+    //     cp3.setCheckComment("pooo");
+    //     cp3.setCheckDate(checkDate);
+    //     entityManager.persist(cp3);
+    //     entityManager.flush();
+
+    //     CheckProduct cp4 = new CheckProduct();
+    //     cp4.setCheckLevel(55);
+    //     cp4.setCheckComment("pooo");
+    //     cp4.setCheckDate(checkDate);
+        
+    //   //  try{
+    //         entityManager.persist(cp4);
+    //         entityManager.flush();
+    //     // }catch(javax.persistence.PersistenceException e) {
+    //     //     System.out.println(); 
+    //     //     System.out.println();   
+    //     //     System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->>testProductIdsMustBeUnique \n\n\n\n\n\n\n\n\n\n\n");
+    //     //     System.out.println(); 
+    //     //     System.out.println(); 
+    //     // }
+    // }
 }

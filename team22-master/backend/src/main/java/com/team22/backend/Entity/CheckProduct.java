@@ -17,15 +17,26 @@ public class CheckProduct {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="checkproduct_seq")
     @Column(name="CheckProduct_ID",unique = true, nullable = false)
   
-    private @NonNull Long checkId;
-    private @NonNull String checkComment;
+    private @NonNull Long checkId; 
+    
+    @NotNull
+    @Size(min=3 ,max=500)
+    @Column(unique = true)
+    private String checkComment;
+    
+    @NotNull
     private LocalDate checkDate;
-    private @NonNull Integer checkLevel;
 
+    @NotNull
+    //@Pattern(regexp = "d{1,2}")
+    private Integer checkLevel;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)
     private  Product product;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Checking.class)
     @JoinColumn(name = "CheckingId", insertable = true)
     private Checking checking;

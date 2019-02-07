@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit ,ViewChild} from '@angular/core';
+import {DatePipe} from '@angular/common';
+import {MatSort} from '@angular/material';
 import { HttpClient} from '@angular/common/http';
 import {STOCKINGService} from '../service/stocking.service';
 import { DataSource } from '@angular/cdk/collections';
@@ -19,7 +21,6 @@ export interface StockElement {
   status: {
     statusProduct: String;
   };
-  productDate: Date;
 }
 @Component({
   selector: 'app-stock',
@@ -39,6 +40,13 @@ export class StockComponent implements OnInit {
   description: Array<any>;
   status: Array<any>;
   product: Array<any>;
+  productDate: Array<any>;
+  selectproductDate: Array<any>;
+  
+  pipe = new DatePipe('en-US');
+  @ViewChild(MatSort)
+  sort: MatSort;
+
   views: any = {
     productID: '',
     productName: '',
@@ -54,7 +62,6 @@ export class StockComponent implements OnInit {
     selectProductID: '',
     selectProductName: '',
     selectProductQuantity: '',
-    selectProductDate: '',
     selectProductPrice : '',
     selectStatus : '',
     selectType : '',
@@ -219,17 +226,25 @@ export class StockComponent implements OnInit {
     );
   }
   addproduct() {
-    if (this.views.productName === '') {
-      alert('Please insert Product Name');
-    } else if (this.views.productPrice === '') {
-      alert('Please insert Product Price');
-    } else if (this.views.productQuantity === '') {
-      alert('Please insert Product Quantity');
-    } else if (this.views.productDate === '') {
-      alert('Please insert Date');
-    } else {
+    const rex = new RegExp('P');
+    this.views.productID.charAt(0);
+    console.log(this.views.productID.charAt(0));
+    if (this.views.productName === ''|| this.views.productPrice === ''||
+      this.views.productQuantity === '' || this.views.productDate === '' ||
+      this.views.productID === '')
+      this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', {
+      });
+      // else {
+      //   this.STOCKService.CheckCustomer(this.views.ProductID).subscribe(checkCustomer => {
+      //     console.log( checkCustomer );
+      //         if ( checkCustomer != null ) {
+      //         this.snackBar.open('Can't USE PriductID ', 'OK', {});
+      //       } 
+      else {     
+       if (rex.test(this.views.productID)) {
     this.httpClient.post('http://localhost:8080/product/add/' + this.views.productID + '/' + this.views.productName
-    + '/' + this.views.productPrice + '/' + this.views.productQuantity + '/' + this.views.productDate + '/'
+    + '/' + this.views.productPrice + '/' + this.views.productQuantity + '/'
+    + this.pipe.transform(this.productDate,'dd:MM:yyyy') + '/'
     + this.views.statusSelect + '/' + this.views.typeSelect, this.views)
     .subscribe(
         data => {
@@ -244,6 +259,11 @@ export class StockComponent implements OnInit {
         }
       );
     }
+    else{
+      this.snackBar.open('Fisr ProductID is P ', 'OK', {
+      });
+    }
+  }
     console.log(this.views.productID);
     console.log(this.views.productName);
     console.log(this.views.productPrice);

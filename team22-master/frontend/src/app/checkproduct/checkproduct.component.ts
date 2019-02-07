@@ -122,6 +122,16 @@ export class CheckproductComponent implements OnInit {
   save() {
     this.views.prodID = this.views.selectPID;
     this.views.checkingSelect = this.views.selectChecking;
+    // if (this.views.selectCheckProductLevel === ''|| this.views.selectCheckProductComment === '')
+    //   this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', {
+    //   });
+    //   else {
+    //     this.STOCKService.CheckCustomer(this.views.ProductID).subscribe(checkCustomer => {
+    //       console.log( checkCustomer );
+    //           if ( checkCustomer != null ) {
+    //           this.snackBar.open('Can't USE PriductID ', 'OK', {});
+    //         } 
+    // else {     
     this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment
     +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.views.checkingSelect,
     this.views) .subscribe(
@@ -136,6 +146,7 @@ export class CheckproductComponent implements OnInit {
         console.log('Error', error);
       }
     );
+  //}
   }
   editcheck() {
     this.views.prodID = this.views.selectPID;
