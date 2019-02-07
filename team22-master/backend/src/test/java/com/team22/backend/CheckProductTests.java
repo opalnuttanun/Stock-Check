@@ -12,8 +12,8 @@ import javax.validation.ValidatorFactory;
 import org.junit.Before;
 import com.team22.backend.Entity.*;
 import com.team22.backend.Repository.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.*;
+import java.time.format.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -45,7 +45,7 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 5);
+            assertEquals(violations.size(), 3);
         }
     }
     @Test
@@ -61,7 +61,7 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 5);
+            assertEquals(violations.size(), 3);
         }
     }
     @Test
@@ -82,33 +82,33 @@ public class CheckProductTests {
             assertEquals(violations.size(), 2);
         }
     }
-    // @Test
-    // (expected=javax.persistence.PersistenceException.class)
-    // public void testCheckLevelMustBeUnique() {
-    //     String cDate = ("01:02:2019");
-    //     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
-    //     LocalDate checkDate = LocalDate.parse(cDate,formatter);
-    //     CheckProduct cp3 = new CheckProduct();
-    //     cp3.setCheckLevel(55);
-    //     cp3.setCheckComment("pooo");
-    //     cp3.setCheckDate(checkDate);
-    //     entityManager.persist(cp3);
-    //     entityManager.flush();
+    @Test
+    (expected=javax.persistence.PersistenceException.class)
+    public void testCheckLevelMustBeUnique() {
+        String cDate = ("01:02:2019");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+        LocalDate checkDate = LocalDate.parse(cDate,formatter);
+        CheckProduct cp3 = new CheckProduct();
+        cp3.setCheckLevel(55);
+        cp3.setCheckComment("pooo");
+        cp3.setCheckDate(checkDate);
+        entityManager.persist(cp3);
+        entityManager.flush();
 
-    //     CheckProduct cp4 = new CheckProduct();
-    //     cp4.setCheckLevel(55);
-    //     cp4.setCheckComment("pooo");
-    //     cp4.setCheckDate(checkDate);
+        CheckProduct cp4 = new CheckProduct();
+        cp4.setCheckLevel(55);
+        cp4.setCheckComment("pooo");
+        cp4.setCheckDate(checkDate);
         
-    //   //  try{
-    //         entityManager.persist(cp4);
-    //         entityManager.flush();
-    //     // }catch(javax.persistence.PersistenceException e) {
-    //     //     System.out.println(); 
-    //     //     System.out.println();   
-    //     //     System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->>testProductIdsMustBeUnique \n\n\n\n\n\n\n\n\n\n\n");
-    //     //     System.out.println(); 
-    //     //     System.out.println(); 
-    //     // }
-    // }
+      //  try{
+            entityManager.persist(cp4);
+            entityManager.flush();
+        // }catch(javax.persistence.PersistenceException e) {
+        //     System.out.println(); 
+        //     System.out.println();   
+        //     System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->>testProductIdsMustBeUnique \n\n\n\n\n\n\n\n\n\n\n");
+        //     System.out.println(); 
+        //     System.out.println(); 
+        // }
+    }
 }

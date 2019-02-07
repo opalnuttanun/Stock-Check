@@ -2,7 +2,8 @@ package com.team22.backend.Entity;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
+import java.time.*;
+import java.util.Date;
 
 @Entity
 @Data
@@ -27,16 +28,17 @@ public class CheckProduct {
     @NotNull
     private LocalDate checkDate;
 
+   // @NotNull
+    private LocalTime checkTime;
+
     @NotNull
     //@Pattern(regexp = "d{1,2}")
     private Integer checkLevel;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)
     private  Product product;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Checking.class)
     @JoinColumn(name = "CheckingId", insertable = true)
     private Checking checking;

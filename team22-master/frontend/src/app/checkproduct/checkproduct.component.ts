@@ -4,6 +4,7 @@ import {MatSnackBar} from '@angular/material';
 import {Component, OnInit ,ViewChild} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {MatSort} from '@angular/material';
+import { AmazingTimePickerService } from 'amazing-time-picker';
 
 export interface Tile {
   cols: number;
@@ -43,6 +44,7 @@ export class CheckproductComponent implements OnInit {
   product: Array<any>;
   checkproduct: Array<any>;
   checkDate: Array<any>;
+  selectedTime: string;
   selectcheckDate: Array<any>;
   pipe = new DatePipe('en-US');
   @ViewChild(MatSort)
@@ -65,11 +67,12 @@ export class CheckproductComponent implements OnInit {
     selectCheckProductLevel: '',
     selectCheckId:'',
     selectChecking:'',
-    checkingSelect:''
+    checkingSelect:'',
+    time:''
   };
   displayedColumns: string[] = ['PID', 'productID', 'productName', 'productPrice', 'productQuantity', 'types','statuses'];
   displayedColumnss: string[] = ['PID','CID','level', 'comment','date','checking'];
-  constructor(private CheckService: CheckproductService,private snackBar: MatSnackBar, private httpClient: HttpClient) {
+  constructor(private CheckService: CheckproductService,private snackBar: MatSnackBar, private httpClient: HttpClient,private atp: AmazingTimePickerService) {
   }
   ngOnInit() {
     this.CheckService.getType().subscribe(data => {
@@ -93,6 +96,20 @@ export class CheckproductComponent implements OnInit {
       console.log(this.checking);
     });
   }
+  open() {
+    const amazingTimePicker = this.atp.open({
+        time: this.selectedTime,
+        theme: 'dark',
+        arrowStyle: {
+            background: 'red',
+            color: 'white',
+        }
+    });
+    amazingTimePicker.afterClose().subscribe(time => {
+      this.selectedTime = time;
+      console.log(this.selectedTime);
+    });
+}
    selectRow(row) {
     this.views.selectPID = row.prodId;
     this.views.selectProductID = row.productIds;
@@ -120,6 +137,7 @@ export class CheckproductComponent implements OnInit {
     console.log(this.views.selectChecking);
   }
   save() {
+  //  this.views.time = this.views.selectedTime;
     this.views.prodID = this.views.selectPID;
     this.views.checkingSelect = this.views.selectChecking;
     // if (this.views.selectCheckProductLevel === ''|| this.views.selectCheckProductComment === '')
@@ -133,7 +151,7 @@ export class CheckproductComponent implements OnInit {
     //         } 
     // else {     
     this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment
-    +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.views.checkingSelect,
+    +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.selectedTime +'/'+ this.views.checkingSelect,
     this.views) .subscribe(
       data => {
         this.snackBar.open('Check ', 'complete', {
