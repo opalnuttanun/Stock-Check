@@ -14,6 +14,8 @@ import com.team22.backend.Entity.*;
 import com.team22.backend.Repository.*;
 import java.time.*;
 import java.time.format.*;
+import java.util.*;
+import java.text.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -45,7 +47,7 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 3);
+            assertEquals(violations.size(), 4);
         }
     }
     @Test
@@ -54,6 +56,7 @@ public class CheckProductTests {
         cp1.setCheckLevel(null);
         cp1.setCheckComment(null);
         cp1.setCheckDate(null);
+        cp1.setCheckTime(null);
 		   try {
             entityManager.persist(cp1);
             entityManager.flush();
@@ -61,7 +64,7 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 3);
+            assertEquals(violations.size(), 4);
         }
     }
     @Test
@@ -69,17 +72,31 @@ public class CheckProductTests {
         String cDate = ("01:02:2019");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
         LocalDate checkDate = LocalDate.parse(cDate,formatter);
+        
+        String  checkTime   =   ("14:25");
+        SimpleDateFormat ft = new SimpleDateFormat ("HH:mm"); 
+        Date ti = new Date();
+        try {
+           ti = ft.parse(checkTime); 
+             System.out.println(ti); 
+        } catch (ParseException e) { 
+         System.out.println("Unparseable using " + ft); 
+         }
+        Instant instant = Instant.ofEpochMilli(ti.getTime());
+        LocalTime time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
+
         CheckProduct cp2 = new CheckProduct();
         cp2.setCheckLevel(55);
         cp2.setCheckComment("pooo");
         cp2.setCheckDate(checkDate);
+        cp2.setCheckTime(time);
 		   try {
             entityManager.persist(cp2);
             entityManager.flush();
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 2);
+            assertEquals(violations.size(), 1);
         }
     }
     @Test
@@ -88,10 +105,24 @@ public class CheckProductTests {
         String cDate = ("01:02:2019");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
         LocalDate checkDate = LocalDate.parse(cDate,formatter);
+
+        String  checkTime   =   ("14:25");
+        SimpleDateFormat ft = new SimpleDateFormat ("HH:mm"); 
+        Date ti = new Date();
+        try {
+           ti = ft.parse(checkTime); 
+             System.out.println(ti); 
+        } catch (ParseException e) { 
+         System.out.println("Unparseable using " + ft); 
+         }
+        Instant instant = Instant.ofEpochMilli(ti.getTime());
+        LocalTime time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
+
         CheckProduct cp3 = new CheckProduct();
         cp3.setCheckLevel(55);
         cp3.setCheckComment("pooo");
         cp3.setCheckDate(checkDate);
+        cp3.setCheckTime(time);
         entityManager.persist(cp3);
         entityManager.flush();
 
@@ -99,7 +130,7 @@ public class CheckProductTests {
         cp4.setCheckLevel(55);
         cp4.setCheckComment("pooo");
         cp4.setCheckDate(checkDate);
-        
+        cp4.setCheckTime(time);
       //  try{
             entityManager.persist(cp4);
             entityManager.flush();
@@ -110,5 +141,50 @@ public class CheckProductTests {
         //     System.out.println(); 
         //     System.out.println(); 
         // }
+    }
+    @Test
+    public void tescheckLevelDigit(){
+        CheckProduct cp5 = new CheckProduct();
+		cp5.setCheckLevel(5555);
+         try {
+            entityManager.persist(cp5);
+            entityManager.flush();
+            fail("Should not pass to this line");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(e);
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 4);
+        }
+    }
+    @Test
+    public void tescheckLevelDecimalMax(){
+        CheckProduct cp6 = new CheckProduct();
+		cp6.setCheckLevel(120);
+         try {
+            entityManager.persist(cp6);
+            entityManager.flush();
+            fail("Should not pass to this line");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(e);
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 4);
+        }
+    }
+    @Test
+    public void tescheckLevelDecimalMin(){
+        CheckProduct cp7 = new CheckProduct();
+		cp7.setCheckLevel(-20);
+         try {
+            entityManager.persist(cp7);
+            entityManager.flush();
+            fail("Should not pass to this line");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            System.out.println(e);
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 4);
+        }
     }
 }
