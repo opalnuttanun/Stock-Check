@@ -137,34 +137,32 @@ export class CheckproductComponent implements OnInit {
     console.log(this.views.selectChecking);
   }
   save() {
-  //  this.views.time = this.views.selectedTime;
     this.views.prodID = this.views.selectPID;
     this.views.checkingSelect = this.views.selectChecking;
-    // if (this.views.selectCheckProductLevel === ''|| this.views.selectCheckProductComment === '')
-    //   this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', {
-    //   });
-    //   else {
-    //     this.STOCKService.CheckCustomer(this.views.ProductID).subscribe(checkCustomer => {
-    //       console.log( checkCustomer );
-    //           if ( checkCustomer != null ) {
-    //           this.snackBar.open('Can't USE PriductID ', 'OK', {});
-    //         } 
-    // else {     
-    this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment
-    +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.selectedTime +'/'+ this.views.checkingSelect,
-    this.views) .subscribe(
-      data => {
-        this.snackBar.open('Check ', 'complete', {
-        });
-        console.log('INPUT Request is successful', data);
-      },
-      error => {
-        this.snackBar.open('Check ', 'uncomplete', {
-        });
-        console.log('Error', error);
+    if (this.views.level === ''|| this.views.comment === ''||this.views.checkingSelect === '')
+        {  this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', { });
+    } else{
+        if(this.views.level>100){
+          {  this.snackBar.open('Not more than 100', 'OK', {});}
+        } else  if(this.views.level<0){
+          {  this.snackBar.open('Not Less than 0', 'OK', { });}
+        } else {     
+            this.httpClient.post('http://localhost:8080/checkproduct/' + this.views.prodID + '/' + this.views.level + '/' + this.views.comment
+            +'/'+ this.pipe.transform(this.checkDate,'dd:MM:yyyy')+'/'+ this.selectedTime +'/'+ this.views.checkingSelect,
+            this.views) .subscribe(
+            data => {
+              this.snackBar.open('Check ', 'complete', {
+              });
+              console.log('INPUT Request is successful', data);
+            },
+            error => {
+              this.snackBar.open('Check ', 'uncomplete', {
+              });
+              console.log('Error', error);
+            }
+            );
+          }
       }
-    );
-  //}
   }
   editcheck() {
     this.views.prodID = this.views.selectPID;

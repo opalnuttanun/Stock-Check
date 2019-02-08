@@ -231,49 +231,54 @@ export class StockComponent implements OnInit {
     console.log(this.views.productID.charAt(0));
     if (this.views.productName === ''|| this.views.productPrice === ''||
       this.views.productQuantity === '' || this.views.productDate === '' ||
-      this.views.productID === '')
-      this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', {
-      });
-      // else {
-      //   this.STOCKService.CheckCustomer(this.views.ProductID).subscribe(checkCustomer => {
-      //     console.log( checkCustomer );
-      //         if ( checkCustomer != null ) {
-      //         this.snackBar.open('Can't USE PriductID ', 'OK', {});
-      //       } 
-      else {     
-       if (rex.test(this.views.productID)) {
-    this.httpClient.post('http://localhost:8080/product/add/' + this.views.productID + '/' + this.views.productName
-    + '/' + this.views.productPrice + '/' + this.views.productQuantity + '/'
-    + this.pipe.transform(this.productDate,'dd:MM:yyyy') + '/'
-    + this.views.statusSelect + '/' + this.views.typeSelect, this.views)
-    .subscribe(
-        data => {
-          this.snackBar.open('input ', 'complete', {
-          });
-          console.log('INPUT Request is successful', data);
-        },
-        error => {
-          this.snackBar.open('input ', 'uncomplete', {
-          });
-          console.log('Error', error);
+      this.views.productID === ''){
+      this.snackBar.open('โปรดใส่ข้อมูลให้ครบ', 'OK', {  });
+    } else {
+        this.STOCKService.CheckProductIDs(this.views.productID).subscribe(checkProductIDs => {
+        console.log( checkProductIDs );
+        if ( checkProductIDs != null ) {
+              this.snackBar.open('Cannot Use ProductID ', 'OK', {});
+        }else {     
+            if (rex.test(this.views.productID)) {
+            this.httpClient.post('http://localhost:8080/product/add/' + this.views.productID + '/' + this.views.productName
+            + '/' + this.views.productPrice + '/' + this.views.productQuantity + '/'
+            + this.pipe.transform(this.productDate,'dd:MM:yyyy') + '/'
+            + this.views.statusSelect + '/' + this.views.typeSelect, this.views)
+            .subscribe(
+                data => {
+                  this.snackBar.open('input ', 'complete', {
+                  });
+                  console.log('INPUT Request is successful', data);
+                },
+                error => {
+                  this.snackBar.open('input ', 'uncomplete', {
+                  });
+                  console.log('Error', error);
+                }
+              );
+            }
+            else{
+              this.snackBar.open('Fisr ProductID is P ', 'OK', {
+              });
+            }
         }
-      );
-    }
-    else{
-      this.snackBar.open('Fisr ProductID is P ', 'OK', {
-      });
-    }
+      console.log(this.views.productID);
+      console.log(this.views.productName);
+      console.log(this.views.productPrice);
+      console.log(this.views.productQuantity);
+      console.log(this.views.productDate);
+      console.log(this.views.statusSelect);
+      console.log(this.views.typeSelect);
+    });
   }
-    console.log(this.views.productID);
-    console.log(this.views.productName);
-    console.log(this.views.productPrice);
-    console.log(this.views.productQuantity);
-    console.log(this.views.productDate);
-    console.log(this.views.statusSelect);
-    console.log(this.views.typeSelect);
-  }
+}
   adddetail() {
     this.views.prodID = this.views.selectPID;
+    if (this.views.data === '')
+        {  this.snackBar.open('โปรดใส่ข้อมูล', 'OK', {
+            });
+        }
+    else {     
     this.httpClient.post('http://localhost:8080/description/' +  this.views.prodID + '/' + this.views.detID + '/' + this.views.data,
     this.views, ) .subscribe(
       data => {
@@ -287,6 +292,7 @@ export class StockComponent implements OnInit {
         console.log('Error', error);
       }
     );
+  }
   }
 }
 export class StockDataSource extends DataSource<any> {
