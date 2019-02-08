@@ -18,7 +18,9 @@ public class Checking {
     @Column(name="Checking_ID",unique = true, nullable = false)
      
     private @NonNull Long checkingId;
-    private @NonNull String checking;
+    
+    @NotNull
+    private String checking;
 
     public Checking (String ck){
         this. checking = ck;

@@ -35,9 +35,11 @@ public class CheckProduct {
     @DecimalMin(value = "0")
     private Integer checkLevel;
 
+
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)
     private  Product product;
+
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Checking.class)
     @JoinColumn(name = "CheckingId", insertable = true)

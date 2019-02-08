@@ -44,7 +44,7 @@ public class Product {
     
     @NotNull 
     private  Integer productPrice ;
-
+    
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Type.class)
     @JoinColumn(name = "typeIds", insertable = true)
     private Type type;

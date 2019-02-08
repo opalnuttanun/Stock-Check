@@ -25,7 +25,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 public class CheckProductTests {
 
 	@Autowired
-	private CheckProductRepository checkproductRepository;
+    private CheckProductRepository checkproductRepository;
+    private CheckingRepository checkingRepository;
+    private ProductRepository productRepository;
 	@Autowired
     private TestEntityManager entityManager;
 
@@ -51,16 +53,18 @@ public class CheckProductTests {
         }
     }
     @Test
-    public void testCheckLevelCannotBeNull() {
+    public void testCheckProductCannotBeNull() {
         CheckProduct cp1 = new CheckProduct();
         cp1.setCheckLevel(null);
         cp1.setCheckComment(null);
         cp1.setCheckDate(null);
         cp1.setCheckTime(null);
+        cp1.setChecking(null);
+        cp1.setProduct(null);
 		   try {
             entityManager.persist(cp1);
             entityManager.flush();
-            fail("CheckLevel must not be null to be valid");
+            fail("CheckProduct must not be null to be valid");
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
@@ -69,11 +73,15 @@ public class CheckProductTests {
     }
     @Test
     public void testCheckProductComplete() {
+        // Product pd =  productRepository.findByProdId(1L);
+        // Checking ck = checkingRepository.findByCheckingId(1L);
+
         String cDate = ("01:02:2019");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
         LocalDate checkDate = LocalDate.parse(cDate,formatter);
         
         String  checkTime   =   ("14:25");
+        
         SimpleDateFormat ft = new SimpleDateFormat ("HH:mm"); 
         Date ti = new Date();
         try {
@@ -90,13 +98,15 @@ public class CheckProductTests {
         cp2.setCheckComment("pooo");
         cp2.setCheckDate(checkDate);
         cp2.setCheckTime(time);
+       // cp2.setChecking(pd);
+      //  cp2.setProduct(ck);
 		   try {
             entityManager.persist(cp2);
             entityManager.flush();
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 1);
+            assertEquals(violations.size(), 2);
         }
     }
     @Test

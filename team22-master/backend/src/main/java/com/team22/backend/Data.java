@@ -51,10 +51,7 @@ public class Data {
                                 Stream.of("Renting", "Selling", "Stocking").forEach(status -> {
                                     Status state = new Status(status);
                                     statusRepository.save(state);
-                                });
-                                Status sta1 = statusRepository.findByStateId(1L);
-                                Status sta2 = statusRepository.findByStateId(2L);
-                                Status sta3 = statusRepository.findByStateId(3L);
+                                });                                
                                 Stream.of("Cloth", "Shoes", "Cosmetic", "Hair", "Accessories", "OtherType").forEach(tName -> {
                                     Type typeprodName = new Type(tName);
                                     typeRepository.save(typeprodName);
@@ -67,6 +64,17 @@ public class Data {
                                     Checking checkingprod = new Checking (checking);
                                     checkingRepository.save(checkingprod);
                                 });
+
+                                Status sta1 = statusRepository.findByStateId(1L);
+                                Status sta2 = statusRepository.findByStateId(2L);
+                                Status sta3 = statusRepository.findByStateId(3L);
+                                Type type1 = typeRepository.findByTypeIds(1L);
+                                Product pt1 = productRepository.findByProdId(1L);
+                                Product pt2 = productRepository.findByProdId(2L);
+                                String pDate = ("01:02:2019");
+                                DateTimeFormatter formatt = DateTimeFormatter.ofPattern("dd:MM:yyyy");
+                                LocalDate productDate = LocalDate.parse(pDate,formatt);
+
                                 Stream.of("M.3","M.6","Polytechnical College","Technical College","Bachelor Degrees","Master Degrees").forEach(EduName -> {
                                     Education educationdb = new Education();
                                     educationdb.setEducationName(EduName);
@@ -110,7 +118,7 @@ public class Data {
                                 Education ed4 = educationRepository.findByEducationId(4L);
                                 Education ed5 = educationRepository.findByEducationId(5L);
                                 Education ed6 = educationRepository.findByEducationId(6L);
-                    
+
                                 Stream.of("0 Year","1-3 Year","4-6 Year","7-9 Year","10 to Up").forEach(ExName -> {
                                     Experience experiencedb = new Experience();
                                     experiencedb.setExperienceName(ExName);
@@ -196,11 +204,8 @@ public class Data {
                                 Customer c4 = customerRepository.findByCusId(4L);
                                 Customer c5 = customerRepository.findByCusId(5L);
                                 Customer c6 = customerRepository.findByCusId(6L);
-                    
-                                Type type1 = typeRepository.findByTypeIds(1L);
-                                Product pt1 = productRepository.findByProdId(1L);
-                    
-                                Stream.of("korea style", "thai style", "laos style","wedding", "thai wedding", "chinese style").forEach(styName -> {
+
+            Stream.of("korea style", "thai style", "laos style","wedding", "thai wedding", "chinese style").forEach(styName -> {
                                     Style styledb = new Style();
                                     styledb.setStyleName(styName);
                                     styleRepository.save(styledb);
@@ -452,7 +457,26 @@ public class Data {
                                         payMentRepository.save(paymentdb);
                                     }
                                 });
-                    
+                                    Product product = new Product();
+                                    product.setProductName("dress");
+                                    product.setProductIds("P45");
+                                    product.setProductPrice(1000);
+                                    product.setProductQuantity(18);
+                                    product.setProductDate(productDate);
+                                    product.setStatus(sta1);
+                                    product.setType(type1);
+                                    productRepository.save(product);
+
+                                    Product product1 = new Product();
+                                    product1.setProductName("Earing");
+                                    product1.setProductIds("P49");
+                                    product1.setProductPrice(1000);
+                                    product1.setProductQuantity(18);
+                                    product1.setProductDate(productDate);
+                                    product1.setStatus(sta2);
+                                    product1.setType(type1);
+                                    productRepository.save(product1);
+                                    
                                 System.out.println("\n Spring-Boot Complete");
                             };
                         }
