@@ -55,6 +55,7 @@ import { CheckproductComponent} from './checkproduct/checkproduct.component';
 import {STOCKINGService} from './service/stocking.service';
 import { CheckproductService } from './service/checkproduct.service';
 import { AmazingTimePickerModule } from 'amazing-time-picker'; 
+//npm i amazing-time-picker --save
 const appRoutes: Routes = [
 ];
 
