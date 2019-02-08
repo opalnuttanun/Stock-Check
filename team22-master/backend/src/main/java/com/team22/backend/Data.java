@@ -60,8 +60,8 @@ public class Data {
                                     Detail dprodName = new Detail(dName);
                                     detailRepository.save(dprodName);
                                 });
-                                Stream.of("Use","Repair","Donate","Reject","Recycle").forEach(checking -> {
-                                    Checking checkingprod = new Checking (checking);
+                                Stream.of("Use","Repair","Donate","Reject","Recycle").forEach(checkings -> {
+                                    Checking checkingprod = new Checking (checkings);
                                     checkingRepository.save(checkingprod);
                                 });
 

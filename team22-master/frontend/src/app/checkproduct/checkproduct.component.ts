@@ -127,7 +127,7 @@ export class CheckproductComponent implements OnInit {
     this.views.selectCheckProductLevel = row.checkLevel;
     this.views.selectCheckProductComment = row.checkComment;
     this.views.selectCheckId = row.checkId;
-    this.views.selectChecking = row.checking.checkingId;
+    this.views.selectChecking = row.checked.checkingId;
     this.checkDate = row.checkDate;
     console.log(this.views.selectCheckId);
     console.log(this.views.selectPID);

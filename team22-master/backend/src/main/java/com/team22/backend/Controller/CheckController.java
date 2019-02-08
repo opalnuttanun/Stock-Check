@@ -72,7 +72,7 @@ public class CheckController {
         newCheck.setProduct(setProd);
         newCheck.setCheckDate(date);
         newCheck.setCheckTime(time);
-        newCheck.setChecking(setCh);
+        newCheck.setChecked(setCh);
         return checkProductRepository.save(newCheck);
     }
     @DeleteMapping("/checkproduct/{checkId}")
@@ -87,7 +87,7 @@ public class CheckController {
         return checkProductRepository.findById(prodId).map(checkEdit -> {
                     checkEdit.setCheckLevel(checkLevel);
                     checkEdit.setCheckComment(checkComment);
-                    checkEdit.setChecking(setCh);
+                    checkEdit.setChecked(setCh);
                     return checkProductRepository.save(checkEdit);
                 }
         ).orElseGet(() -> {

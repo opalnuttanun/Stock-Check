@@ -21,7 +21,6 @@ public class CheckProduct {
     
     @NotNull
     @Size(min=3 ,max=500)
-    @Column(unique = true)
     private String checkComment;
     
     @NotNull
@@ -35,13 +34,13 @@ public class CheckProduct {
     @DecimalMin(value = "0")
     private Integer checkLevel;
 
-
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Product.class)
     @JoinColumn(name = "Product_ID", insertable = true)
     private  Product product;
 
-
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = Checking.class)
     @JoinColumn(name = "CheckingId", insertable = true)
-    private Checking checking;
+    private Checking checked;
 }

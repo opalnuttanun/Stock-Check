@@ -26,8 +26,15 @@ public class CheckProductTests {
 
 	@Autowired
     private CheckProductRepository checkproductRepository;
+    @Autowired
     private CheckingRepository checkingRepository;
+    @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private StatusRepository statusRepository;
+    @Autowired
+    private TypeRepository typeRepository;
+
 	@Autowired
     private TestEntityManager entityManager;
 
@@ -49,7 +56,7 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 4);
+            assertEquals(violations.size(), 6);
         }
     }
     @Test
@@ -59,7 +66,7 @@ public class CheckProductTests {
         cp1.setCheckComment(null);
         cp1.setCheckDate(null);
         cp1.setCheckTime(null);
-        cp1.setChecking(null);
+        cp1.setChecked(null);
         cp1.setProduct(null);
 		   try {
             entityManager.persist(cp1);
@@ -68,20 +75,19 @@ public class CheckProductTests {
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 4);
+            assertEquals(violations.size(), 6);
         }
     }
     @Test
     public void testCheckProductComplete() {
-        // Product pd =  productRepository.findByProdId(1L);
-        // Checking ck = checkingRepository.findByCheckingId(1L);
-
+        CheckProduct cp2 = new CheckProduct();
+        Status sta1 = statusRepository.findByStateId(1L);
+        Type type1 = typeRepository.findByTypeIds(1L);
         String cDate = ("01:02:2019");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
-        LocalDate checkDate = LocalDate.parse(cDate,formatter);
+        LocalDate Date = LocalDate.parse(cDate,formatter);
         
         String  checkTime   =   ("14:25");
-        
         SimpleDateFormat ft = new SimpleDateFormat ("HH:mm"); 
         Date ti = new Date();
         try {
@@ -92,65 +98,29 @@ public class CheckProductTests {
          }
         Instant instant = Instant.ofEpochMilli(ti.getTime());
         LocalTime time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
-
-        CheckProduct cp2 = new CheckProduct();
+        Product product = new Product();
+        product.setProductName("dress");
+        product.setProductIds("P45");
+        product.setProductPrice(1000);
+        product.setProductQuantity(18);
+        product.setProductDate(Date);
+        product.setStatus(sta1);
+        product.setType(type1);
+        productRepository.save(product);
+        Checking ck = checkingRepository.findByCheckingId(1L);
         cp2.setCheckLevel(55);
         cp2.setCheckComment("pooo");
-        cp2.setCheckDate(checkDate);
+        cp2.setCheckDate(Date);
         cp2.setCheckTime(time);
-       // cp2.setChecking(pd);
-      //  cp2.setProduct(ck);
+        cp2.setChecked(ck);
+        cp2.setProduct(product);
 		   try {
             entityManager.persist(cp2);
-            entityManager.flush();
         } catch(javax.validation.ConstraintViolationException e) {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             assertEquals(violations.isEmpty(), false);
             assertEquals(violations.size(), 2);
         }
-    }
-    @Test
-    (expected=javax.persistence.PersistenceException.class)
-    public void testCheckLevelMustBeUnique() {
-        String cDate = ("01:02:2019");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd:MM:yyyy");
-        LocalDate checkDate = LocalDate.parse(cDate,formatter);
-
-        String  checkTime   =   ("14:25");
-        SimpleDateFormat ft = new SimpleDateFormat ("HH:mm"); 
-        Date ti = new Date();
-        try {
-           ti = ft.parse(checkTime); 
-             System.out.println(ti); 
-        } catch (ParseException e) { 
-         System.out.println("Unparseable using " + ft); 
-         }
-        Instant instant = Instant.ofEpochMilli(ti.getTime());
-        LocalTime time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalTime();
-
-        CheckProduct cp3 = new CheckProduct();
-        cp3.setCheckLevel(55);
-        cp3.setCheckComment("pooo");
-        cp3.setCheckDate(checkDate);
-        cp3.setCheckTime(time);
-        entityManager.persist(cp3);
-        entityManager.flush();
-
-        CheckProduct cp4 = new CheckProduct();
-        cp4.setCheckLevel(55);
-        cp4.setCheckComment("pooo");
-        cp4.setCheckDate(checkDate);
-        cp4.setCheckTime(time);
-      //  try{
-            entityManager.persist(cp4);
-            entityManager.flush();
-        // }catch(javax.persistence.PersistenceException e) {
-        //     System.out.println(); 
-        //     System.out.println();   
-        //     System.out.println("\n\n\n\n\n\n\n\n\n" + e + "----------------->>testProductIdsMustBeUnique \n\n\n\n\n\n\n\n\n\n\n");
-        //     System.out.println(); 
-        //     System.out.println(); 
-        // }
     }
     @Test
     public void tescheckLevelDigit(){
@@ -164,7 +134,7 @@ public class CheckProductTests {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             System.out.println(e);
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 4);
+            assertEquals(violations.size(), 6);
         }
     }
     @Test
@@ -179,7 +149,7 @@ public class CheckProductTests {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             System.out.println(e);
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 4);
+            assertEquals(violations.size(), 6);
         }
     }
     @Test
@@ -194,7 +164,21 @@ public class CheckProductTests {
             Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
             System.out.println(e);
             assertEquals(violations.isEmpty(), false);
-            assertEquals(violations.size(), 4);
+            assertEquals(violations.size(), 6);
+        }
+    }
+    @Test
+    public void testCheckingCannotBeNull() {
+        Checking ck1 = new Checking();
+        ck1.setChecking(null);
+		   try {
+            entityManager.persist(ck1);
+            entityManager.flush();
+            fail("Checking must not be null to be valid");
+        } catch(javax.validation.ConstraintViolationException e) {
+            Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+            assertEquals(violations.isEmpty(), false);
+            assertEquals(violations.size(), 1);
         }
     }
 }
